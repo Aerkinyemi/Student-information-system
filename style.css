@@ -124,7 +124,7 @@ body{
   border: 1px solid #240162;
   box-shadow: 3px 3px 10px ;
   background: white;
-  width: 300px;
+  
   
 }
 #studentout{
@@ -151,7 +151,7 @@ body{
   color:white;
   margin: -5.5px;
   margin-bottom: 10px;
-  width: 300px;
+  width:400px;
   border-radius: 5px 5px 0px 0px;
   padding: 5px;
   
