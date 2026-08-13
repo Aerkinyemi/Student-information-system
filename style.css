@@ -130,7 +130,7 @@ body{
 #studentout{
   display:flex;
   flex-wrap: wrap;
-  padding-left: 5vw;
+  padding-left: 3vw;
   gap:1vw;
 
   
