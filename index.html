@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Student Information System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="d5"></div>
+  
+  <h3 id="h3">STUDENT INFORMATION SYSTEM</h3>
+
+
+  
+  <div id="total-container">
+    
+    <div id="total-students"><h5 id="h5"></h5></div>
+    <div id="total-male"><h5 id="h6"></h5></div>
+    <div id="total-female"><h5 id="h7"></h5></div>
+
+  </div>
+  
+  <form id="form">
+    <h3 id="add-edit">Add/Edit</h3>
+  <div id="formdiv">
+  
+  <div>
+    <b><label for="surname">Surname:</label></b>
+    <br>
+    <input type="text" id="surname" placeholder="Enter student surname">
+  </div>
+    
+    <div>
+    <b><label for="firstname">First name:</label></b>
+    <br>
+    <input type="text" id="firstname" placeholder="Enter student first name">
+  </div>
+
+  <div>
+    <b><label for="lastname">Last name <i>(optional)</i>:</label></b>
+    <br>
+    <input type="text" id="lastname" placeholder="Enter student last name">
+  </div>  
+
+  <div>
+    <b><label for="admissionno">Admission No.</label></b>
+    <br>
+    <input type="text" id="admissionno" placeholder="Enter student admission number">
+      </div>
+
+  <div>
+    <b><label for="dob">Date of birth:</label></b>
+    <br>
+    <input type="date" id="dob">
+  </div>
+
+  <div>
+    <b><label for="age">Age:</label></b>
+    <br>
+    <input type="number" id="age" placeholder="Enter student age">
+  </div>
+    
+  <div>
+    <b><label for="class">Class:</label></b>
+    <br>
+    <input type="text" id="class" placeholder="Enter student class">
+  </div>
+
+    <div>
+        <b><label for="gender">Gender:</label></b>
+      <br>
+    <input type="text" id="gender" placeholder="Enter student gender">
+    
+    </div>
+
+
+    <div>
+    <b><label for="parentguardian">Parent/Guardian name:</label></b>
+    <br>
+    <input type="text" id="parentguardian" placeholder="Enter parent or guardian name">
+    </div>
+
+    <div>
+    <b><label for="parentguardianphonenumber">Parent/Guardian phone no:</label></b>
+    <br>
+    <input type="tel" id="parentguardianphonenumber" placeholder="Enter parent or guardian phone number">
+   
+    </div>
+
+    
+
+    <div id="formi">
+    <b><label for="homeaddress">Home address:</label></b>
+    <br>
+    <textarea id="homeaddress" cols="40" rows="3"  placeholder="Enter home address"></textarea>
+    
+    </div>
+  
+  </div>
+    <p id="p"></p>
+
+    <div id="for">
+      <button id="btn">Add Student</button>
+    </div>
+  </form>
+  <br>
+
+<div id="searchdiv">
+    <input type="search" id="search" placeholder="Search by surname">
+  <button onclick="search()">Search</button>
+</div>
+
+  <div id="searchresult"></div>
+  
+  <div id="students-container">
+    <p id="studentout"></p>
+  </div>
+  
+  <script>
+    let h3=document.getElementById("h3").style;
+    h3.background="#030b33";
+    h3.color="white";
+    h3.padding="10px";
+    h3.textAlign="center";
+    
+    //SCRIPT
+    let studentdata=[];
+    let edit=-1;
+    
+    let viewsave=localStorage.getItem("studentdata");
+    if (viewsave) {
+      studentdata=JSON.parse(viewsave)
+    }
+    showstudents();
+    
+    //form
+    document.getElementById("form").addEventListener("submit",function(event) {
+      event.preventDefault();
+      
+      
+      //student object
+      let student={
+        surname:document.getElementById("surname").value.trim(),
+        firstname:document.getElementById("firstname").value.trim(),
+        lastname:document.getElementById("lastname").value.trim(),
+        admissionno:document.getElementById("admissionno").value.trim(),
+        age:document.getElementById("age").value.trim(),
+        studentclass:document.getElementById("class").value.toUpperCase().trim(),
+        gender:document.getElementById("gender").value.toLowerCase().trim(),
+        parentguardian:document.getElementById("parentguardian").value.trim(),
+        parentguardianphone:document.getElementById("parentguardianphonenumber").value.trim(),
+        homeaddress:document.getElementById("homeaddress").value.trim(),
+        dob:document.getElementById("dob").value
+      }
+      
+      //validation
+      if (
+        student.surname===""||
+        student.firstname===""||
+        student.admissionno===""||
+        student.age===""||
+        student.dob===""||
+        student.studentclass===""||
+        student.gender===""||
+        student.parentguardian===""||
+        student.parentguardianphone===""||
+        student.homeaddress===""
+        ) {
+          document.getElementById("p").innerHTML="All fields are required";
+          return;
+        }
+      
+      if (
+        student.gender!= "male"&&student.gender!="female"
+        ) {
+          document.getElementById("p").innerHTML="Gender can either be Male or Female check and try again";
+          return;
+      }
+      
+        
+        if (edit===-1) {
+          studentdata.push(student)
+        }
+        else{
+          studentdata[edit]=student;
+          edit=-1;
+        }
+        localStorage.setItem("studentdata",JSON.stringify(studentdata))
+        showstudents();
+        showgender();
+        document.getElementById("h5").innerHTML="<h4 id='di'>Total Students</h4>"+"<br>"+"<h1 id='h2'>"+studentdata.length+"</h1>";
+        document.getElementById("btn").innerHTML="Add Student";
+        document.getElementById("form").reset();
+        document.getElementById("p").innerHTML="";
+          
+    });
+    
+  
+    
+    function showstudents() {
+      document.getElementById("studentout").innerHTML="";
+      
+      for (let s=0;s<studentdata.length;s++) { 
+      
+        let sn = s+1;
+        document.getElementById("studentout").innerHTML+=
+          "<div id='studentinformationcard'>"+
+          
+
+          
+          "<h2 id='h'>"+sn+". "+studentdata[s].firstname+"'s "+"Information"+"</h2>"+
+          "<b>ADMISSION NO. </b>"+studentdata[s].admissionno+"<br>"+
+          "<b>SURNAME: </b>"+studentdata[s].surname+"<br>"+
+          "<b>FIRST NAME: </b>"+studentdata[s].firstname+"<br>"+
+          "<b>LAST NAME: </b>"+studentdata[s].lastname+"<br>"+
+          "<b>AGE: </b>"+studentdata[s].age+"<br>"+
+          "<b>GENDER: </b>"+studentdata[s].gender+"<br>"+
+          "<b>CLASS: </b>"+studentdata[s].studentclass+"<br>"+
+          "<b>PARENT/GUARDIAN: </b>"+studentdata[s].parentguardian+"<br>"+
+          "<p id='tel'>"+"<b id='tel2'>PHONE NO. </b>"+studentdata[s].parentguardianphone+"</p>"+
+          "<b>HOME ADDRESS: </b>"+studentdata[s].homeaddress+"<br>"+
+          "<button onclick='deleteinfo("+s+")' id='del'>Delete</button>"+
+          " <button onclick='editinfo("+s+")' id='edit'>Edit</button>"+
+        
+          "</div>"
+          ;
+        
+
+    
+        showgender();
+        
+
+        
+    }}
+
+
+    function search() {
+      let search=document.getElementById("search").value.trim();
+      let convertsearch= search[0].toUpperCase() + search.slice(1).toLowerCase();
+      for (let s=0;s<studentdata.length;s++) {
+        let sn = s+1;
+     
+        if (convertsearch ===studentdata[s].surname) {
+           
+        document.getElementById("searchresult").innerHTML=
+          "<div id='studentinformationcard'>"+
+          
+
+          
+          "<h2 id='h'>"+sn+". "+studentdata[s].firstname+"'s "+"Information"+"</h2>"+
+          "<b>ADMISSION NO. </b>"+studentdata[s].admissionno+"<br>"+
+          "<b>SURNAME: </b>"+studentdata[s].surname+"<br>"+
+          "<b>FIRST NAME: </b>"+studentdata[s].firstname+"<br>"+
+          "<b>LAST NAME: </b>"+studentdata[s].lastname+"<br>"+
+          "<b>AGE: </b>"+studentdata[s].age+"<br>"+
+          "<b>GENDER: </b>"+studentdata[s].gender+"<br>"+
+          "<b>CLASS: </b>"+studentdata[s].studentclass+"<br>"+
+          "<b>PARENT/GUARDIAN: </b>"+studentdata[s].parentguardian+"<br>"+
+          "<p id='tel'>"+"<b id='tel2'>PHONE NO. </b>"+studentdata[s].parentguardianphone+"</p>"+
+          "<b>HOME ADDRESS: </b>"+studentdata[s].homeaddress+"<br>"+
+          "<button onclick='deleteinfo("+s+")' id='del'>Delete</button>"+
+          " <button onclick='editinfo("+s+")' id='edit'>Edit</button>"+
+        
+          "</div>"
+          ;
+          
+        return;
+        }
+        else{
+          document.getElementById("searchresult").innerHTML="<i> The surname you enter is incorrect! check the surname and try again.</i>";
+          
+          
+        }
+      }
+      
+    }
+
+    
+    
+    
+    function editinfo(index) {
+      edit=index;
+      
+      document.getElementById("surname").value = studentdata[edit].surname;
+      document.getElementById("firstname").value = studentdata[edit].firstname;
+      document.getElementById("lastname").value = studentdata[edit].lastname;
+      document.getElementById("admissionno").value = studentdata[edit].admissionno;
+      document.getElementById("age").value = studentdata[edit].age;
+      document.getElementById("class").value = studentdata[edit].studentclass;
+      document.getElementById("gender").value = studentdata[edit].gender;
+      document.getElementById("parentguardian").value= studentdata[edit].parentguardian;
+      document.getElementById("parentguardianphonenumber").value= studentdata[edit].parentguardianphone;
+      document.getElementById("homeaddress").value= studentdata[edit].homeaddress
+      document.getElementById("dob").value= studentdata[edit].dob;
+      
+      document.getElementById("btn").innerHTML="Update Student";
+      showgender();
+    }
+    
+    function deleteinfo(dex) {
+      studentdata.splice(dex,1);
+      showstudents();
+      showgender();
+      localStorage.setItem("studentdata",JSON.stringify(studentdata))
+
+      document.getElementById("h5").innerHTML="<h4 id='di'>Total Students</h4>"+"<br>"+"<h1 id='h2'>"+studentdata.length+"</h1>";
+    }
+    
+    
+
+    
+    function showgender() {
+      let male=0;
+      let female=0;
+      for (let x=0;x<studentdata.length;x++) {
+    
+        
+      
+        if (studentdata[x].gender==="male") {
+          male++;
+        
+      }
+        else if(studentdata[x].gender==="female") {
+          female++;
+          
+        }
+        
+  
+    }
+      document.getElementById("h6").innerHTML="<h4 id='di'>Male Students </h4>"+"<br>"+"<h1 id='h2'>"+male+"</h1>";
+      document.getElementById("h7").innerHTML="<h4 id='di'>Female Students </h4>"+"<br>"+"<h1 id='h2'>"+female+"</h1>";
+    }
+    showgender();
+    document.getElementById("h5").innerHTML="<h4 id='di'>Total Students</h4>"+"<br>"+"<h1 id='h2'>"+studentdata.length+"</h1>";
+
+
+    
+
+  
+
+
+
+
+
+
+
+// Method 1: .at(-1)
+
+      
+    
+    
+    
+  </script>
+</body>
+</html>
